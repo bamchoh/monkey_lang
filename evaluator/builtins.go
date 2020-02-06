@@ -1,6 +1,8 @@
 package evaluator
 
 import (
+	"fmt"
+
 	"github.com/bamchoh/monkey_lang/object"
 )
 
@@ -102,10 +104,19 @@ func implPush(args ...object.Object) object.Object {
 	return &object.Array{Elements: newElements}
 }
 
+func implPuts(args ...object.Object) object.Object {
+	for _, arg := range args {
+		fmt.Println(arg.Inspect())
+	}
+
+	return NULL
+}
+
 var builtins = map[string]*object.Builtin{
 	"len":   &object.Builtin{Fn: implLen},
 	"first": &object.Builtin{Fn: implFirst},
 	"last":  &object.Builtin{Fn: implLast},
 	"rest":  &object.Builtin{Fn: implRest},
 	"push":  &object.Builtin{Fn: implPush},
+	"puts":  &object.Builtin{Fn: implPuts},
 }
