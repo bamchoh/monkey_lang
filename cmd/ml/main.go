@@ -46,6 +46,7 @@ func main() {
 
 	out := os.Stdout
 	env := object.NewEnvironment()
+	macroEnv := object.NewEnvironment()
 	l := lexer.New(script)
 	p := parser.New(l)
 	program := p.ParseProgram()
@@ -53,7 +54,9 @@ func main() {
 		printParserErrors(out, p.Errors())
 		os.Exit(-1)
 	}
-	evaluated := evaluator.Eval(program, env)
+	evaluator.DefineMacros(program, macroEnv)
+	expanded := evaluator.ExpandMacros(program, macroEnv)
+	evaluated := evaluator.Eval(expanded, env)
 	if evaluated != nil && evaluated.Type() == object.ERROR_OBJ {
 		io.WriteString(out, " evaluator errors:\n")
 		fmt.Println("\t" + evaluated.Inspect())
